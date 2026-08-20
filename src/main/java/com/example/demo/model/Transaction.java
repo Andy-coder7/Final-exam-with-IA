@@ -16,4 +16,5 @@ public class Transaction {
     private final TransactionType transactionType;
     private final BigDecimal amount;
     private final String reason;
+    private final Account account;
 }
