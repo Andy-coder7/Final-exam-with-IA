@@ -2,10 +2,12 @@ package com.example.demo.repository;
 
 import com.example.demo.model.Account;
 import com.example.demo.model.AccountType;
+import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.sql.*;
 
+@Repository
 public class AccountRepository {
 
     private final Connection connection;

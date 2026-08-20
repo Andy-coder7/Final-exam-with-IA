@@ -3,12 +3,14 @@ package com.example.demo.service;
 import com.example.demo.model.Transaction;
 import com.example.demo.model.TransactionType;
 import com.example.demo.repository.TransactionRepository;
+import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
@@ -43,7 +45,6 @@ public class TransactionService {
 
 
     public Transaction createTransaction(Transaction transaction) throws SQLException {
-        // Validation basique des données obligatoires
         if (transaction == null) {
             throw new IllegalArgumentException("La transaction ne peut pas être nulle.");
         }

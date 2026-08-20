@@ -1,10 +1,12 @@
 package com.example.demo.service;
 
 import com.example.demo.repository.AccountRepository;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
 
+@Service
 public class AccountService {
 
     private final AccountRepository accountRepository;

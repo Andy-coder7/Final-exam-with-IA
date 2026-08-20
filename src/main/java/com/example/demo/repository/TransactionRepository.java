@@ -3,19 +3,21 @@ package com.example.demo.repository;
 import com.example.demo.model.Account;
 import com.example.demo.model.Transaction;
 import com.example.demo.model.TransactionType;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import ;
 
+@Repository
+@AllArgsConstructor
 public class TransactionRepository {
 
     private final Connection connection;
 
-    public TransactionRepository(Connection connection) {
-        this.connection = connection;
-    }
 
     public List<Transaction> findByType(TransactionType type) throws SQLException {
         List<Transaction> transactions = new ArrayList<>();
