@@ -1,13 +1,24 @@
 package com.example.demo.repository;
 
-import java.util.List;
+import java.sql.*;
 
 public class AccountRepository {
-    String url = "jdbc:postgresql://localhost:5432/transaction";
-    String password = "";
-    String user = "";
+    private final Connection connection;
 
-    public List<Transaction> getAccount(){
+    public AccountRepository(Connection connection) {
+        this.connection = connection;
+    }
 
+    public Double getBalanceByAccountId(Long accountId) throws SQLException {
+        String sql = "SELECT balance FROM account WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setLong(1, accountId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getDouble("balance");
+                }
+            }
+        }
+        return null;
     }
 }
