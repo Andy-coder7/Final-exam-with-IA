@@ -3,28 +3,29 @@ package com.example.demo.repository;
 import com.example.demo.model.Account;
 import com.example.demo.model.Transaction;
 import com.example.demo.model.TransactionType;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import ;
 
 @Repository
-@AllArgsConstructor
 public class TransactionRepository {
 
-    private final Connection connection;
+    private final DataSource dataSource;
 
+    public TransactionRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     public List<Transaction> findByType(TransactionType type) throws SQLException {
         List<Transaction> transactions = new ArrayList<>();
         String sql = "SELECT t.id, t.created_at, t.transaction_type, t.amount, t.reason, t.account_id " +
                 "FROM transaction t WHERE t.transaction_type = ?";
 
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, type.name());
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
@@ -40,7 +41,8 @@ public class TransactionRepository {
         String sql = "SELECT t.id, t.created_at, t.transaction_type, t.amount, t.reason, t.account_id " +
                 "FROM transaction t WHERE t.account_id = ?";
 
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, accountId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
@@ -50,12 +52,12 @@ public class TransactionRepository {
         }
         return transactions;
     }
-
     public Transaction save(Transaction transaction) throws SQLException {
         String sql = "INSERT INTO transaction (id, created_at, transaction_type, amount, reason, account_id) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
 
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, transaction.getId());
             statement.setTimestamp(2, Timestamp.from(transaction.getCreatedAt()));
             statement.setString(3, transaction.getTransactionType().name());
@@ -67,7 +69,6 @@ public class TransactionRepository {
         }
         return transaction;
     }
-
     private Transaction mapResultSetToTransaction(ResultSet rs) throws SQLException {
         Timestamp timestamp = rs.getTimestamp("created_at");
         String accountId = rs.getString("account_id");
